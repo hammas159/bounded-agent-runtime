@@ -61,6 +61,8 @@ class QuotaManager:
         q = self._quota(tenant)
         return {
             "tenant": tenant,
-            "runs_last_hour": len(runs), "max_runs_per_hour": q.max_runs_per_hour,
-            "usd_today": round(spend, 4), "max_usd_per_day": q.max_usd_per_day,
+            "runs_last_hour": len(runs),
+            "max_runs_per_hour": q.max_runs_per_hour,
+            "usd_today": round(spend, 4),
+            "max_usd_per_day": q.max_usd_per_day,
         }

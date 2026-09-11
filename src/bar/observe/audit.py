@@ -22,15 +22,16 @@ from typing import Any
 class Event:
     run_id: str
     seq: int
-    kind: str          # step | tool_call | tool_error | budget_stop | approval | finish
+    kind: str  # step | tool_call | tool_error | budget_stop | approval | finish
     at: float
     tenant: str = "default"
     data: dict[str, Any] = field(default_factory=dict)
 
 
 class AuditLog:
-    def __init__(self, path: str | Path = "runs", run_id: str | None = None,
-                 tenant: str = "default") -> None:
+    def __init__(
+        self, path: str | Path = "runs", run_id: str | None = None, tenant: str = "default"
+    ) -> None:
         self.run_id = run_id or uuid.uuid4().hex[:12]
         self.tenant = tenant
         self.dir = Path(path)
@@ -42,8 +43,12 @@ class AuditLog:
     def record(self, kind: str, **data: Any) -> Event:
         self._seq += 1
         event = Event(
-            run_id=self.run_id, seq=self._seq, kind=kind,
-            at=time.time(), tenant=self.tenant, data=data,
+            run_id=self.run_id,
+            seq=self._seq,
+            kind=kind,
+            at=time.time(),
+            tenant=self.tenant,
+            data=data,
         )
         self.events.append(event)
         # Flushed immediately: a run that is killed must still have a readable trace.
@@ -64,5 +69,9 @@ class AuditLog:
         kinds: dict[str, int] = {}
         for e in self.events:
             kinds[e.kind] = kinds.get(e.kind, 0) + 1
-        return {"run_id": self.run_id, "tenant": self.tenant,
-                "events": len(self.events), "by_kind": kinds}
+        return {
+            "run_id": self.run_id,
+            "tenant": self.tenant,
+            "events": len(self.events),
+            "by_kind": kinds,
+        }

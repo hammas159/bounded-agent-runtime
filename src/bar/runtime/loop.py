@@ -29,7 +29,7 @@ from ..observe.audit import AuditLog
 from ..tools.registry import ApprovalRequired, ToolError, ToolRegistry
 
 
-class Outcome(str, enum.Enum):
+class Outcome(enum.StrEnum):
     COMPLETED = "completed"
     BUDGET_STOP = "budget_stop"
     NEEDS_APPROVAL = "needs_approval"
@@ -116,8 +116,13 @@ class Runtime:
                 log.record("budget_stop", limit_kind=stop.kind, limit=stop.limit, used=stop.used)
                 return self._finish(Outcome.BUDGET_STOP, str(stop), budget, history, log)
 
-            log.record("step", n=budget.steps, tool=action.tool, args=action.args,
-                       reasoning=action.reasoning)
+            log.record(
+                "step",
+                n=budget.steps,
+                tool=action.tool,
+                args=action.args,
+                reasoning=action.reasoning,
+            )
 
             if action.tool == "finish":
                 answer = str(action.args.get("answer", ""))
@@ -134,32 +139,48 @@ class Runtime:
                 observation = self.registry.call(
                     action.tool, action.args, approved=action.tool in approvals
                 )
-                log.record("tool_call", tool=action.tool, ok=True,
-                           observation=str(observation)[:500])
-                history.append({"action": action.tool, "args": action.args,
-                                "observation": observation})
+                log.record(
+                    "tool_call", tool=action.tool, ok=True, observation=str(observation)[:500]
+                )
+                history.append(
+                    {"action": action.tool, "args": action.args, "observation": observation}
+                )
 
             except ApprovalRequired as gate:
                 # Not a failure. The run pauses, intact, and waits for a human.
                 log.record("approval", tool=gate.tool, tier=gate.tier.name, args=gate.tool_args)
                 result = self._finish(Outcome.NEEDS_APPROVAL, str(gate), budget, history, log)
-                result.pending_approval = {"tool": gate.tool, "tier": gate.tier.name,
-                                           "args": gate.tool_args}
+                result.pending_approval = {
+                    "tool": gate.tool,
+                    "tier": gate.tier.name,
+                    "args": gate.tool_args,
+                }
                 return result
 
             except ToolError as exc:
                 # A failing tool is an observation, not a crash. The agent gets to
                 # react - and the budget keeps counting while it does.
                 log.record("tool_error", tool=action.tool, error=str(exc))
-                history.append({"action": action.tool, "args": action.args,
-                                "observation": f"ERROR: {exc}"})
+                history.append(
+                    {"action": action.tool, "args": action.args, "observation": f"ERROR: {exc}"}
+                )
 
     def _finish(self, outcome, reason, budget, history, log, answer: str = "") -> Result:
-        log.record("finish", outcome=outcome.value, reason=reason,
-                   steps=budget.steps, usd=round(budget.usd, 6),
-                   seconds=round(budget.elapsed, 3))
+        log.record(
+            "finish",
+            outcome=outcome.value,
+            reason=reason,
+            steps=budget.steps,
+            usd=round(budget.usd, 6),
+            seconds=round(budget.elapsed, 3),
+        )
         return Result(
-            outcome=outcome, answer=answer, reason=reason, steps=budget.steps,
-            usd=round(budget.usd, 6), seconds=round(budget.elapsed, 3),
-            history=history, run_id=log.run_id,
+            outcome=outcome,
+            answer=answer,
+            reason=reason,
+            steps=budget.steps,
+            usd=round(budget.usd, 6),
+            seconds=round(budget.elapsed, 3),
+            history=history,
+            run_id=log.run_id,
         )

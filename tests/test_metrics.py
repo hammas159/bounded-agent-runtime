@@ -8,7 +8,7 @@ from bar.observe.metrics import fleet_metrics
 from bar.runtime import Runtime
 from bar.tools.registry import RiskTier
 
-from .planners import Expensive, NeverFinishes, Repeats, Wellbehaved, WantsIrreversible
+from .planners import Expensive, NeverFinishes, Repeats, WantsIrreversible, Wellbehaved
 from .toolset import build_registry
 
 

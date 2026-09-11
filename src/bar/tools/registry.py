@@ -20,9 +20,9 @@ from typing import Any
 class RiskTier(enum.IntEnum):
     """Ordered, so policy can be expressed as a single ceiling."""
 
-    READ = 0        # observes; changes nothing
-    WRITE = 1       # changes state, reversibly
-    EXTERNAL = 2    # leaves the system: sends mail, calls a third party
+    READ = 0  # observes; changes nothing
+    WRITE = 1  # changes state, reversibly
+    EXTERNAL = 2  # leaves the system: sends mail, calls a third party
     IRREVERSIBLE = 3  # cannot be undone: deletes, payments, notifications sent
 
 

@@ -18,19 +18,57 @@ def build_registry(**overrides) -> ToolRegistry:
     SIDE_EFFECTS.clear()
     reg = ToolRegistry(**overrides)
 
-    reg.register(Tool("search", "Search the corpus", lambda q: f"results for {q}",
-                      RiskTier.READ, 0.001, {"q": "str"}))
-    reg.register(Tool("premium_model", "Expensive model call", lambda prompt: "answer",
-                      RiskTier.READ, 0.05, {"prompt": "str"}))
-    reg.register(Tool("slow_api", "A dependency that hangs",
-                      lambda n=0: (time.sleep(0.05), "slow result")[1], RiskTier.READ, 0.0, {"n": "int"}))
-    reg.register(Tool("always_fails", "A dependency that is down",
-                      _broken, RiskTier.READ, 0.0, {}))
-    reg.register(Tool("write_record", "Update a record, reversibly",
-                      lambda key, value: f"{key}={value}", RiskTier.WRITE, 0.0,
-                      {"key": "str", "value": "str"}))
-    reg.register(Tool("send_email", "Send an email. Cannot be recalled.",
-                      _send_email, RiskTier.IRREVERSIBLE, 0.0, {"to": "str", "body": "str"}))
+    reg.register(
+        Tool(
+            "search",
+            "Search the corpus",
+            lambda q: f"results for {q}",
+            RiskTier.READ,
+            0.001,
+            {"q": "str"},
+        )
+    )
+    reg.register(
+        Tool(
+            "premium_model",
+            "Expensive model call",
+            lambda prompt: "answer",
+            RiskTier.READ,
+            0.05,
+            {"prompt": "str"},
+        )
+    )
+    reg.register(
+        Tool(
+            "slow_api",
+            "A dependency that hangs",
+            lambda n=0: (time.sleep(0.05), "slow result")[1],
+            RiskTier.READ,
+            0.0,
+            {"n": "int"},
+        )
+    )
+    reg.register(Tool("always_fails", "A dependency that is down", _broken, RiskTier.READ, 0.0, {}))
+    reg.register(
+        Tool(
+            "write_record",
+            "Update a record, reversibly",
+            lambda key, value: f"{key}={value}",
+            RiskTier.WRITE,
+            0.0,
+            {"key": "str", "value": "str"},
+        )
+    )
+    reg.register(
+        Tool(
+            "send_email",
+            "Send an email. Cannot be recalled.",
+            _send_email,
+            RiskTier.IRREVERSIBLE,
+            0.0,
+            {"to": "str", "body": "str"},
+        )
+    )
     return reg
 
 

@@ -1,3 +1,3 @@
-from .registry import Tool, ToolRegistry, RiskTier
+from .registry import RiskTier, Tool, ToolRegistry
 
 __all__ = ["Tool", "ToolRegistry", "RiskTier"]

@@ -33,15 +33,18 @@ class LLMPlanner:
         self.llm = get_llm(get_settings())
 
     def next_action(self, goal: str, history: list[dict]) -> Action:
-        trace = "\n".join(
-            f"{i}. {h['action']}({json.dumps(h['args'], default=str)}) -> "
-            f"{str(h['observation'])[:300]}"
-            for i, h in enumerate(history, start=1)
-        ) or "(nothing yet)"
+        trace = (
+            "\n".join(
+                f"{i}. {h['action']}({json.dumps(h['args'], default=str)}) -> "
+                f"{str(h['observation'])[:300]}"
+                for i, h in enumerate(history, start=1)
+            )
+            or "(nothing yet)"
+        )
 
         raw = self.llm.complete(
             f"GOAL: {goal}\n\nTOOLS:\n{self.registry.describe()}\n"
-            f'- finish(answer): stop and return the answer\n\nSO FAR:\n{trace}\n\nJSON:',
+            f"- finish(answer): stop and return the answer\n\nSO FAR:\n{trace}\n\nJSON:",
             system=SYSTEM,
             max_tokens=400,
         )
@@ -53,13 +56,19 @@ class LLMPlanner:
             if not m:
                 # An unparseable plan is an ordinary failure. Returning `finish`
                 # keeps the run terminating rather than spinning on bad output.
-                return Action(tool="finish", args={"answer": raw.strip()[:500]},
-                              reasoning="planner returned unparseable output")
+                return Action(
+                    tool="finish",
+                    args={"answer": raw.strip()[:500]},
+                    reasoning="planner returned unparseable output",
+                )
             try:
                 parsed = json.loads(m.group())
             except json.JSONDecodeError:
-                return Action(tool="finish", args={"answer": raw.strip()[:500]},
-                              reasoning="planner returned unparseable output")
+                return Action(
+                    tool="finish",
+                    args={"answer": raw.strip()[:500]},
+                    reasoning="planner returned unparseable output",
+                )
 
         return Action(
             tool=str(parsed.get("tool", "finish")),

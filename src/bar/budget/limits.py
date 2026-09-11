@@ -63,7 +63,7 @@ class Budget:
         """
         self.steps += 1
         self._fingerprints.append(fingerprint)
-        recent = self._fingerprints[-self.max_repeats:]
+        recent = self._fingerprints[-self.max_repeats :]
         if len(recent) == self.max_repeats and len(set(recent)) == 1:
             raise BudgetExceeded("loop", self.max_repeats, self.max_repeats)
 

@@ -16,8 +16,15 @@ from bar.runtime.loop import Outcome, Runtime
 from bar.tools.registry import RiskTier
 
 from .planners import (
-    BrokenPlanner, Expensive, Hallucinates, NeverFinishes, Repeats, Slow,
-    SendsThenFinishes, Wellbehaved, WantsIrreversible,
+    BrokenPlanner,
+    Expensive,
+    Hallucinates,
+    NeverFinishes,
+    Repeats,
+    SendsThenFinishes,
+    Slow,
+    WantsIrreversible,
+    Wellbehaved,
 )
 from .toolset import SIDE_EFFECTS, build_registry
 
@@ -141,8 +148,7 @@ class TestQuotas:
 
     def test_spend_quota_is_independent_of_per_run_budget(self, tmp_path):
         """Many individually well-behaved runs must not exhaust a tenant."""
-        quotas = QuotaManager(default=TenantQuota(max_runs_per_hour=1000,
-                                                  max_usd_per_day=0.01))
+        quotas = QuotaManager(default=TenantQuota(max_runs_per_hour=1000, max_usd_per_day=0.01))
         rt = Runtime(build_registry(), audit_dir=str(tmp_path), quotas=quotas)
         with pytest.raises(QuotaExceeded):
             for _ in range(50):

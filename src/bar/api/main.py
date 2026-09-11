@@ -61,8 +61,11 @@ def start_run(req: RunRequest) -> dict:
     runtime = Runtime(
         registry,
         budget_factory=lambda: Budget(
-            max_steps=s.max_steps, max_seconds=s.max_seconds, max_usd=s.max_usd,
-            max_tool_calls=s.max_tool_calls, max_repeats=s.max_repeats,
+            max_steps=s.max_steps,
+            max_seconds=s.max_seconds,
+            max_usd=s.max_usd,
+            max_tool_calls=s.max_tool_calls,
+            max_repeats=s.max_repeats,
         ),
         audit_dir=s.audit_dir,
         tenant=req.tenant,
