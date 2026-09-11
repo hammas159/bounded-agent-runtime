@@ -11,6 +11,9 @@ install:  ## Create .venv and install everything
 test:  ## Run the containment suite - no model, no network, no database
 	uv run pytest -q
 
+ui:  ## Ops console on :8503
+	uv run streamlit run ui/app.py --server.port 8503
+
 demo:  ## Run a real LLM agent against the demo toolset
 	uv run bar demo
 
@@ -22,4 +25,4 @@ fmt:  ## Auto-format
 	uv run ruff format src tests
 	uv run ruff check --fix src tests
 
-.PHONY: help install test demo lint fmt
+.PHONY: help install test demo ui lint fmt
