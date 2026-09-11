@@ -147,3 +147,56 @@ no database, no network. Running a real agent additionally needs an LLM backend
 ## License
 
 MIT
+
+---
+
+## Run it yourself
+
+```bash
+git clone https://github.com/hammas159/bounded-agent-runtime
+cd bounded-agent-runtime
+
+uv sync --all-groups     # or: pip install -e ".[dev]"
+make test                # 21 tests, no model, no network, no API key
+```
+
+The containment suite is the demonstration. It replaces the agent with scripted
+misbehaviour and asserts the runtime stops it:
+
+```bash
+uv run pytest -q -v
+# test_agent_that_never_finishes_is_stopped      PASSED
+# test_repetition_is_detected_before_the_step_budget  PASSED
+# test_irreversible_action_is_not_performed      PASSED   <- and no email was sent
+```
+
+To run a real LLM agent inside the runtime, add a backend:
+
+```bash
+ollama pull qwen2.5:3b-instruct    # free and local
+cp .env.example .env
+make demo
+uv run bar replay <run_id>         # reconstruct any run from its audit log
+```
+
+## Problems hit while building this
+
+**`AuditLog.record(kind, **data)` collided with its own callers.** Every budget stop
+passed `kind=` as payload, which clashed with the positional parameter name and raised
+`TypeError` — so the moment the runtime tried to log a stop, it crashed instead. *Fixed*
+by renaming the payload key; the audit log now records the ceiling that fired.
+
+**`ApprovalRequired` shadowed `BaseException.args`.** Assigning `self.args = args` and
+then calling `super().__init__(message)` silently replaced the tool arguments with the
+message string. The approval record was losing exactly the data a human needs *in order
+to approve* — an operator would have been asked to authorise "send_email" with no
+recipient and no body. *Fixed* by renaming to `tool_args`, with a test that asserts the
+arguments survive into the audit record.
+
+Both would have passed code review. Neither survived the first run of the test suite,
+which is the argument for writing the suite first.
+
+**A scripted planner that repeats one action trips loop detection — correctly.** The
+test asserting that approval lets work through was using it, so the run stopped before
+the approved action executed. That was a bad fixture rather than a bug, and it is worth
+recording because the distinction matters: the code was right and the test was wrong.
