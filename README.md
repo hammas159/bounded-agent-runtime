@@ -1,4 +1,4 @@
-# bounded-agent-runtime
+# bounded-agent-runtime (FastAPI, Pydantic, Anthropic)
 
 [![ci](https://github.com/hammas159/bounded-agent-runtime/actions/workflows/ci.yml/badge.svg)](https://github.com/hammas159/bounded-agent-runtime/actions/workflows/ci.yml)
 ![python](https://img.shields.io/badge/python-3.12-blue)
