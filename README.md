@@ -157,7 +157,7 @@ git clone https://github.com/hammas159/bounded-agent-runtime
 cd bounded-agent-runtime
 
 uv sync --all-groups     # or: pip install -e ".[dev]"
-make test                # 21 tests, no model, no network, no API key
+make test                # 26 tests, no model, no network, no API key
 ```
 
 The containment suite is the demonstration. It replaces the agent with scripted
@@ -178,6 +178,24 @@ cp .env.example .env
 make demo
 uv run bar replay <run_id>         # reconstruct any run from its audit log
 ```
+
+### The demo dashboard (`ui` dependency group)
+
+`pyproject.toml` has declared a `streamlit` + `pandas` `ui` group since the repo's
+first commit — and `api/main.py`'s own docstring says "HTTP surface **and ops console
+backend**" — but no console ever shipped. This is that console: pick a misbehaving
+planner, run it live against the real bounded runtime, and see the actual
+`SIDE_EFFECTS` list (not the runtime's self-report) prove the irreversible action
+didn't happen, plus a fleet dashboard read back from the real audit logs those runs
+produce.
+
+```bash
+uv sync --group ui        # or: pip install streamlit pandas
+streamlit run ui/app.py
+```
+
+Local only, writes real audit logs to `.demo_runs/` (gitignored) — not a deployed
+service.
 
 ## Problems hit while building this
 

@@ -1,4 +1,5 @@
 # Python
+uv.lock
 __pycache__/
 *.py[cod]
 .venv/
@@ -34,3 +35,4 @@ node_modules/
 .DS_Store
 Thumbs.db
 runs/
+.demo_runs/
