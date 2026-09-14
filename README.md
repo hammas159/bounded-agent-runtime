@@ -1,19 +1,47 @@
-# bounded-agent-runtime (FastAPI, Pydantic, Anthropic)
+<h1 align="center">bounded-agent-runtime</h1>
+<p align="center"><i>Agent limits in the runtime, not in the prompt - and a chaos suite that proves it</i></p>
 
-[![ci](https://github.com/hammas159/bounded-agent-runtime/actions/workflows/ci.yml/badge.svg)](https://github.com/hammas159/bounded-agent-runtime/actions/workflows/ci.yml)
-![python](https://img.shields.io/badge/python-3.12-blue)
-![license](https://img.shields.io/badge/license-MIT-green)
+<p align="center">
+  <a href="#the-premise">The premise</a> &middot;
+  <a href="#what-is-bounded">What is bounded</a> &middot;
+  <a href="#risk-is-a-property-of-the-tool">Risk per tool</a> &middot;
+  <a href="#the-chaos-suite-is-the-project">The chaos suite</a> &middot;
+  <a href="#audit-and-replay">Audit and replay</a> &middot;
+  <a href="#problems-hit-while-building-this">Problems hit</a>
+</p>
 
-**An agent runtime whose limits the agent cannot influence — and a chaos suite that
-proves it.**
-
-Every job description asks for "safe" or "governed" agents. Almost every
-implementation puts the limits in the prompt. This one puts them in the runtime,
-then tries to break it on every push.
+<p align="center">
+  <a href="https://github.com/hammas159/bounded-agent-runtime/actions/workflows/ci.yml"><img src="https://github.com/hammas159/bounded-agent-runtime/actions/workflows/ci.yml/badge.svg" alt="ci"></a>
+  <img src="https://img.shields.io/badge/python-3.11%2B-blue" alt="python">
+  <img src="https://img.shields.io/badge/stack-FastAPI%20%C2%B7%20Pydantic-orange" alt="stack">
+  <img src="https://img.shields.io/badge/chaos%20suite-on%20every%20push-informational" alt="tested">
+  <a href="LICENSE"><img src="https://img.shields.io/badge/license-MIT-green" alt="license"></a>
+</p>
 
 ---
 
 ## The premise
+
+```mermaid
+flowchart LR
+    A["agent wants<br/>to call a tool"] --> R{"risk level<br/>of THIS tool"}
+    R -->|"low"| X["execute"]
+    R -->|"medium"| B{"within budget<br/>and step limit?"}
+    R -->|"high"| H["require approval"]
+    B -->|"no"| S["stop"]
+    B -->|"yes"| X
+    X --> L["append to audit log"]
+    L --> RP["replayable"]
+
+    style S fill:#dc2626,color:#fff
+    style H fill:#f59e0b,color:#fff
+    style RP fill:#2563eb,color:#fff
+```
+
+Every job description asks for "safe" or "governed" agents, and almost every implementation
+puts the limits **in the prompt**. A prompt is a request. This puts them in the runtime,
+then tries to break it on every push.
+
 
 An agent cannot be trusted to respect its own limits, because the thing being limited
 is the thing doing the checking. So:
@@ -143,6 +171,10 @@ tests/test_containment.py
 [uv](https://docs.astral.sh/uv/). The containment suite needs nothing else — no GPU,
 no database, no network. Running a real agent additionally needs an LLM backend
 (Ollama locally, or an API key).
+
+## Keywords
+
+AI agent safety &middot; agent governance &middot; bounded agents &middot; tool calling &middot; risk-based approval &middot; human in the loop &middot; audit log &middot; replay &middot; chaos testing &middot; budget limits &middot; step limits &middot; FastAPI &middot; Pydantic &middot; agent runtime &middot; LLM security &middot; guardrails
 
 ## License
 
