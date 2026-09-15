@@ -8,6 +8,10 @@ dependencies = [
     "fastapi>=0.115", "uvicorn[standard]>=0.32",
     "pydantic>=2.9", "pydantic-settings>=2.6", "httpx>=0.28",
     "anthropic>=0.40", "rich>=13.9", "typer>=0.15",
+    # imported by src/bar/llm.py for retry/backoff on model calls. It was
+    # missing, so `make install` followed by `make demo` crashed with
+    # ModuleNotFoundError on a clean checkout.
+    "tenacity>=9.0",
 ]
 
 [project.scripts]

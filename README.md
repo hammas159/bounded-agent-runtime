@@ -226,6 +226,15 @@ uv sync --group ui        # or: pip install streamlit pandas
 streamlit run ui/app.py
 ```
 
+![Fleet dashboard](docs/images/dashboard.png)
+
+Fifteen runs of the chaos suite. The three outcomes are separated deliberately:
+`budget_stop` is the runtime working, `needs_approval` is a human decision pending,
+and only `completed` counts toward the success rate — which is why the headline
+number is 40% and not a flattering 93%. "Stops by ceiling" names *which* limit
+fired (cost, loop, steps), because "the agent was stopped" is not actionable and
+"the agent looped on an identical call three times" is.
+
 Local only, writes real audit logs to `.demo_runs/` (gitignored) — not a deployed
 service.
 
