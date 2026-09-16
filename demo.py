@@ -5,6 +5,7 @@
 None of this uses a model. Containment must not depend on the agent
 cooperating, so the agent is replaced with something that definitely will not.
 """
+
 import sys
 import tempfile
 
@@ -13,7 +14,6 @@ sys.path.insert(0, ".")
 
 from bar.budget import Budget
 from bar.runtime.loop import Runtime
-from bar.tools.registry import RiskTier
 from tests.planners import (
     Expensive,
     Hallucinates,
@@ -26,20 +26,20 @@ from tests.planners import (
 from tests.toolset import build_registry
 
 CASES = [
-    ("Wellbehaved",     Wellbehaved(),      Budget(),                   "finishes on its own"),
-    ("NeverFinishes",   NeverFinishes(),    Budget(max_steps=5),        "loops forever"),
-    ("Repeats",         Repeats(),          Budget(max_repeats=3),      "same call over and over"),
-    ("Expensive",       Expensive(),        Budget(max_usd=0.05),       "burns budget"),
-    ("Slow",            Slow(),             Budget(max_seconds=1.0, max_steps=999), "takes too long"),
-    ("Hallucinates",    Hallucinates(),     Budget(),                   "calls a tool that does not exist"),
-    ("WantsIrreversible", WantsIrreversible(), Budget(),                "tries to send real email"),
+    ("Wellbehaved", Wellbehaved(), Budget(), "finishes on its own"),
+    ("NeverFinishes", NeverFinishes(), Budget(max_steps=5), "loops forever"),
+    ("Repeats", Repeats(), Budget(max_repeats=3), "same call over and over"),
+    ("Expensive", Expensive(), Budget(max_usd=0.05), "burns budget"),
+    ("Slow", Slow(), Budget(max_seconds=1.0, max_steps=999), "takes too long"),
+    ("Hallucinates", Hallucinates(), Budget(), "calls a tool that does not exist"),
+    ("WantsIrreversible", WantsIrreversible(), Budget(), "tries to send real email"),
 ]
 
 tmp = tempfile.mkdtemp()
 
 print("INPUT")
 print(f"   {len(CASES)} planners, each given a goal and a budget")
-for name, _, b, why in CASES:
+for name, _, _budget, why in CASES:
     print(f"   {name:19} {why}")
 print()
 
