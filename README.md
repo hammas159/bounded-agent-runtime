@@ -148,6 +148,7 @@ reconstructed without rerunning the model.
 ```bash
 make install
 make test      # the containment suite — no model needed
+python demo.py # seven misbehaving agents, all contained — no model needed
 make demo      # run a real agent against the toolset
 ```
 
@@ -164,6 +165,7 @@ src/bar/
 tests/planners.py       scripted misbehaviour
 tests/toolset.py        tools, including deliberately broken ones
 tests/test_containment.py
+demo.py                 seven misbehaving agents, contained
 ```
 
 ## Requirements
@@ -211,32 +213,22 @@ make demo
 uv run bar replay <run_id>         # reconstruct any run from its audit log
 ```
 
-### The demo dashboard (`ui` dependency group)
+### Input / Output
 
-`pyproject.toml` has declared a `streamlit` + `pandas` `ui` group since the repo's
-first commit — and `api/main.py`'s own docstring says "HTTP surface **and ops console
-backend**" — but no console ever shipped. This is that console: pick a misbehaving
-planner, run it live against the real bounded runtime, and see the actual
-`SIDE_EFFECTS` list (not the runtime's self-report) prove the irreversible action
-didn't happen, plus a fleet dashboard read back from the real audit logs those runs
-produce.
+![input](docs/images/input.png)
 
-```bash
-uv sync --group ui        # or: pip install streamlit pandas
-streamlit run ui/app.py
-```
+`python demo.py`
 
-![Fleet dashboard](docs/images/dashboard.png)
+![output](docs/images/output.png)
 
-Fifteen runs of the chaos suite. The three outcomes are separated deliberately:
-`budget_stop` is the runtime working, `needs_approval` is a human decision pending,
-and only `completed` counts toward the success rate — which is why the headline
-number is 40% and not a flattering 93%. "Stops by ceiling" names *which* limit
-fired (cost, loop, steps), because "the agent was stopped" is not actionable and
-"the agent looped on an identical call three times" is.
+Four different ceilings fire (steps, loop, cost, time), the approval gate holds an
+irreversible action, and one agent completes. The outcomes are separated deliberately:
+`BUDGET_STOP` is the runtime working, `NEEDS_APPROVAL` is a human decision pending, and
+only `COMPLETED` counts as success — which is why the headline is not a flattering
+"7 of 7 handled".
 
-Local only, writes real audit logs to `.demo_runs/` (gitignored) — not a deployed
-service.
+`Hallucinates` completing is also deliberate: an invented tool name is an error handed
+back to the agent, not a crash.
 
 ## Problems hit while building this
 
