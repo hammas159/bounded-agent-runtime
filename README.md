@@ -1,4 +1,4 @@
-<h1 align="center">bounded-agent-runtime</h1>
+<h1 align="center">bounded-agent-runtime (FastAPI · Pydantic · Anthropic API · Typer)</h1>
 <p align="center"><i>Agent limits in the runtime, not in the prompt - and a chaos suite that proves it</i></p>
 
 <p align="center">
