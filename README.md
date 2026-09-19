@@ -11,7 +11,7 @@
 </p>
 
 <p align="center">
-  <a href="https://github.com/hammas159/bounded-agent-runtime/actions/workflows/ci.yml"><img src="https://github.com/hammas159/bounded-agent-runtime/actions/workflows/ci.yml/badge.svg" alt="ci"></a>
+  <a href="https://github.com/hammasbuilds/bounded-agent-runtime/actions/workflows/ci.yml"><img src="https://github.com/hammasbuilds/bounded-agent-runtime/actions/workflows/ci.yml/badge.svg" alt="ci"></a>
   <img src="https://img.shields.io/badge/python-3.11%2B-blue" alt="python">
   <img src="https://img.shields.io/badge/stack-FastAPI%20%C2%B7%20Pydantic-orange" alt="stack">
   <img src="https://img.shields.io/badge/chaos%20suite-on%20every%20push-informational" alt="tested">
@@ -187,7 +187,7 @@ MIT
 ## Run it yourself
 
 ```bash
-git clone https://github.com/hammas159/bounded-agent-runtime
+git clone https://github.com/hammasbuilds/bounded-agent-runtime
 cd bounded-agent-runtime
 
 uv sync --all-groups     # or: pip install -e ".[dev]"
